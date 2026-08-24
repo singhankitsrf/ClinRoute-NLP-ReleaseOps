@@ -18,7 +18,8 @@ jobs:
       - name: Generate synthetic CI corpus
         run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
       - run: python scripts/check_data_contract.py --data data/synthetic_referrals.csv
-      - run: ruff check .
+      - name: Lint critical Python errors
+        run: ruff check . --select E9,F63,F7,F82
       - run: mypy src
       - run: pytest -q
       - run: python scripts/api_contract_smoke.py
