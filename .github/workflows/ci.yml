@@ -1,0 +1,36 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: {python-version: ["3.11", "3.12"]}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: ${{ matrix.python-version }}, cache: pip}
+      - run: python -m pip install --upgrade pip && pip install -e ".[dev]"
+      - name: Generate synthetic CI corpus
+        run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
+      - run: python scripts/check_data_contract.py --data data/synthetic_referrals.csv
+      - run: ruff check .
+      - run: mypy src
+      - run: pytest -q
+      - run: python scripts/api_contract_smoke.py
+      - run: bandit -q -r src scripts
+  baseline-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e .
+      - run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
+      - run: python training/train_baseline.py --data data/synthetic_referrals.csv --output models/baseline --metrics artifacts/baseline_metrics.json
+      - uses: actions/upload-artifact@v4
+        with: {name: synthetic-baseline-metrics, path: artifacts/baseline_metrics.json}
