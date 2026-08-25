@@ -36,9 +36,9 @@ jobs:
       - name: Type check
         run: mypy src --no-site-packages --ignore-missing-imports
       - name: Unit tests
-        run: pytest -q
+        run: PYTHONPATH=.:src pytest -q
       - name: API/NLP smoke contract
-        run: python scripts/api_contract_smoke.py
+        run: PYTHONPATH=.:src python scripts/api_contract_smoke.py
       - name: Security scan
         run: bandit -q -r src scripts
 
