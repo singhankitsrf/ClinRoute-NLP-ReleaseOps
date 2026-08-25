@@ -32,7 +32,9 @@ class TransformerBundle:
         model_dir = Path(model_dir)
         metadata = json.loads((model_dir / "metadata.json").read_text())
 
-        tokenizer = AutoTokenizer.from_pretrained(
+        # This is an exported local tokenizer artifact. local_files_only=True prevents
+        # any Hugging Face Hub download; B615 is therefore a false positive here.
+        tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
             model_dir / "tokenizer",
             revision=None,
             local_files_only=True,
