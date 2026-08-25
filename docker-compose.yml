@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      MODEL_DIR: /models/baseline
+      ROUTE_MIN_CONFIDENCE: "0.70"
+      URGENCY_MIN_CONFIDENCE: "0.70"
+      REDACT_IDENTIFIERS: "true"
+    volumes: ["./models:/models:ro"]
+    read_only: true
+    tmpfs: [/tmp]

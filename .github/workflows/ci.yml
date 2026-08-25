@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.11"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python-version }}"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Generate synthetic CI corpus
+        run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
+      - name: Validate data contract
+        run: python scripts/check_data_contract.py --data data/synthetic_referrals.csv
+      - name: Lint critical Python errors
+        run: ruff check . --select E9,F63,F7,F82
+      - name: Type check
+        run: mypy src --no-site-packages --ignore-missing-imports
+      - name: Unit tests
+        run: PYTHONPATH=.:src pytest -q
+      - name: API/NLP smoke contract
+        run: PYTHONPATH=.:src python scripts/api_contract_smoke.py
+      - name: Security scan
+        run: bandit -q -r src scripts
+
+  baseline-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        run: pip install -e .
+      - name: Generate synthetic baseline corpus
+        run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
+      - name: Train reproducible baseline
+        run: python training/train_baseline.py --data data/synthetic_referrals.csv --output models/baseline --metrics artifacts/baseline_metrics.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-baseline-metrics
+          path: artifacts/baseline_metrics.json

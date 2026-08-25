@@ -1,0 +1,15 @@
+name: Model Regression Gate
+on:
+  workflow_dispatch:
+    inputs:
+      baseline_artifact: {description: "Baseline metrics JSON", required: true, default: "release/baseline_metrics.json"}
+      candidate_artifact: {description: "Candidate metrics JSON", required: true, default: "release/candidate_metrics.json"}
+permissions: {contents: read}
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python scripts/model_regression_gate.py --baseline "${{ inputs.baseline_artifact }}" --candidate "${{ inputs.candidate_artifact }}"

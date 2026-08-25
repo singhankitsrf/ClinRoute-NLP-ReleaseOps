@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.mypy_cache
+artifacts
+data/synthetic_referrals.csv
+*.pt
+*.bin
+*.safetensors
+.env

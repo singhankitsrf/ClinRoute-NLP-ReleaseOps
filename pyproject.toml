@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "clinroute-nlp-releaseops"
+version = "0.1.0"
+description = "Production NLP referral-routing platform with model regression gates and CI/CD."
+requires-python = ">=3.11"
+dependencies = ["fastapi>=0.115","uvicorn[standard]>=0.30","pydantic>=2.8","numpy>=1.26","pandas>=2.2","scikit-learn>=1.5","joblib>=1.4"]
+[project.optional-dependencies]
+transformer = ["torch>=2.4","transformers>=5.0,<6","accelerate>=1.0"]
+dev = ["pytest>=8.3","httpx>=0.27","ruff>=0.7","mypy>=1.11","bandit>=1.7","pip-audit>=2.7","types-requests>=2.32"]
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+exclude = ["training/"]
