@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="ClinRoute NLP: reproducible browser ML referral-routing demonstration by Ankit Kumar Singh." />
+  <title>ClinRoute NLP | Ankit Kumar Singh</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">AI LEAD · ML RELEASE ENGINEERING · RESPONSIBLE AI</p>
+        <h1>ClinRoute NLP</h1>
+        <p class="lead">Referral routing, stated-urgency classification, confidence review, identifier redaction and reproducible model evidence — running entirely in your browser.</p>
+      </div>
+      <div class="status-card">
+        <span class="dot"></span><strong>Client-side ML</strong>
+        <small>No server inference · no input persistence</small>
+      </div>
+    </header>
+
+    <section class="notice">
+      <strong>Synthetic engineering demonstration.</strong> Use fictional text only. The benchmark uses templated synthetic referrals and is not clinical validation.
+    </section>
+
+    <nav class="tabs" aria-label="Demo sections">
+      <button class="tab active" data-tab="demo">Live inference</button>
+      <button class="tab" data-tab="evidence">Evaluation evidence</button>
+      <button class="tab" data-tab="engineering">Engineering decisions</button>
+    </nav>
+
+    <section id="demo" class="panel active">
+      <div class="grid two">
+        <article class="card">
+          <label for="note">Synthetic referral</label>
+          <textarea id="note" maxlength="5000" rows="8" placeholder="Enter fictional referral text or choose an example below."></textarea>
+          <div class="examples">
+            <button data-example="ENT referral for ear pain for 1 week. Finding: inflamed tympanic membrane. urgent assessment is requested.">Otology · urgent</button>
+            <button data-example="ENT referral for gradual hearing loss for 3 months. Finding: failed hearing screen. routine specialist review is requested.">Audiology · routine</button>
+            <button data-example="ENT referral for nasal obstruction for 2 weeks. Finding: nasal polyp. earlier specialist review is requested.">Rhinology · expedited</button>
+          </div>
+          <button id="analyze" class="primary">Analyze referral</button>
+          <p id="error" class="error" role="alert"></p>
+        </article>
+
+        <article class="card results">
+          <div class="result-row">
+            <div><span>Predicted service</span><strong id="route">—</strong></div>
+            <div><span>Confidence</span><strong id="routeConf">—</strong></div>
+          </div>
+          <div class="result-row">
+            <div><span>Stated urgency</span><strong id="urgency">—</strong></div>
+            <div><span>Confidence</span><strong id="urgencyConf">—</strong></div>
+          </div>
+          <div class="review" id="review">Run an example to see the review decision.</div>
+          <details>
+            <summary>Model output & provenance</summary>
+            <pre id="details">{}</pre>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <section id="evidence" class="panel">
+      <div class="metrics" id="metricCards"></div>
+      <div class="grid two">
+        <article class="card">
+          <h2>Leakage-aware protocol</h2>
+          <p>Identifiers are redacted and identical normalized notes are removed <strong>before</strong> the deterministic 80/20 split. Saved hashes and predictions make the benchmark auditable.</p>
+          <dl id="protocol"></dl>
+        </article>
+        <article class="card">
+          <h2>Evidence boundary</h2>
+          <p>Perfect synthetic classification is expected here because the generator uses shared template vocabulary and states urgency explicitly. These measurements demonstrate pipeline reproducibility, not clinical generalization.</p>
+          <a href="https://github.com/singhankitsrf/ClinRoute-NLP-ReleaseOps/tree/main/evaluation" target="_blank" rel="noreferrer">Inspect evaluation artifacts ↗</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="engineering" class="panel">
+      <div class="grid three">
+        <article class="card"><h2>Portable inference</h2><p>Versioned TF-IDF vocabulary, IDF weights and logistic-regression coefficients are exported from the trained scikit-learn pipeline and executed client-side.</p></article>
+        <article class="card"><h2>Release gate</h2><p>GitHub Actions regenerates the seeded benchmark, runs the model-regression gate, validates browser/Python parity, then publishes the exact validated static bundle.</p></article>
+        <article class="card"><h2>Responsible boundary</h2><p>Confidence thresholds are engineering examples. Identifier redaction is best-effort. The system explicitly avoids diagnosis or clinical-performance claims.</p></article>
+      </div>
+      <div class="links">
+        <a href="https://github.com/singhankitsrf/ClinRoute-NLP-ReleaseOps" target="_blank" rel="noreferrer">GitHub source ↗</a>
+        <a href="https://huggingface.co/singhankit491" target="_blank" rel="noreferrer">Hugging Face profile ↗</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>Built by <strong>Ankit Kumar Singh</strong></span>
+      <span id="revision">Loading model provenance…</span>
+    </footer>
+  </main>
+  <script src="runtime.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
