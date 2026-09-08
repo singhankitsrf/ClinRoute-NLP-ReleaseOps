@@ -1,0 +1,105 @@
+{
+  "benchmark_scope": "synthetic_data_only",
+  "dataset_sha256": "822d4fe811255ccd96c35cea03a9e3335e2770f7854f4769ee7c77bcbeb4420f",
+  "environment": {
+    "joblib": "1.5.3",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0"
+  },
+  "input_rows": 3000,
+  "limitations": [
+    "Templated synthetic referrals; urgency is explicitly stated in input.",
+    "Shared vocabulary across splits; does not establish real referral generalization."
+  ],
+  "model_sha256": {
+    "VERSION": "d36afd074f79f28aea9ed9a1be9d0b74f5925f2ac8181bf525aaa1f5b30d3a06",
+    "route.joblib": "7fa293d9e7d304abe80843cf0a746bf4489d314a6f0615ee80c17a374f27366f",
+    "urgency.joblib": "db3ceb7a634d11c943b1a4c1746c28f517e233593b0241afb9332acd3235a64d"
+  },
+  "normalized_corpus_sha256": "e250c44c1e4f8cac5e388db65ad7c81a09a57e5a3c3eb0b41f6d1e01e6161bd2",
+  "protocol": "redacted-deduplicated-v2",
+  "route": {
+    "accuracy": 1.0,
+    "brier_score": 0.029927439120376275,
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        12,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        12,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        18,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        12
+      ]
+    ],
+    "ece": 0.15388531917556753,
+    "labels": [
+      "audiology",
+      "general_ent",
+      "laryngology",
+      "otology",
+      "rhinology"
+    ],
+    "macro_f1": 1.0
+  },
+  "seed": 42,
+  "test_samples": 66,
+  "train_samples": 264,
+  "train_test_text_overlap": 0,
+  "unique_notes": 330,
+  "urgency": {
+    "accuracy": 1.0,
+    "brier_score": 0.06703322770640821,
+    "confusion_matrix": [
+      [
+        22,
+        0,
+        0
+      ],
+      [
+        0,
+        22,
+        0
+      ],
+      [
+        0,
+        0,
+        22
+      ]
+    ],
+    "ece": 0.20679828888841711,
+    "labels": [
+      "expedited",
+      "routine",
+      "urgent"
+    ],
+    "macro_f1": 1.0
+  }
+}

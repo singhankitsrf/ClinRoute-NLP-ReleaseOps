@@ -77,3 +77,8 @@ The repository intentionally uses synthetic data. Redaction is not a certified d
 ## Author
 
 **Ankit Kumar Singh** — Applied AI • NLP • Transformers • MLOps • CI/CD • Healthcare AI • Cloud/Platform Engineering
+
+## Hugging Face deployment and evaluation
+
+See [deployment instructions](docs/HUGGING_FACE.md) and the `hf_space/` application.
+The `evaluation/` directory distinguishes measured results from pending image-model evaluation.

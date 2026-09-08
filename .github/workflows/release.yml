@@ -2,28 +2,49 @@ name: Container Release
 on:
   push:
     tags: ["v*.*.*"]
-permissions: {contents: read, packages: write, attestations: write, id-token: write}
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12", cache: pip}
-      - run: pip install -e ".[dev]"
+        with: {python-version: "3.11", cache: pip}
+      - run: pip install -e ".[dev]" -r hf_space/requirements.txt
       - run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
       - run: python scripts/check_data_contract.py
-      - run: ruff check . && mypy src && pytest -q && bandit -q -r src scripts
+      - run: ruff check . --select E9,F63,F7,F82
+      - run: mypy src --no-site-packages --ignore-missing-imports
+      - run: PYTHONPATH=.:src pytest -q
+      - run: bandit -q -r src scripts
+      - name: Train exact release candidate
+        run: python training/train_baseline.py --metrics evaluation/candidate_metrics.json
+      - name: Mandatory model regression gate
+        run: python scripts/model_regression_gate.py --baseline evaluation/baseline_metrics.json --candidate evaluation/candidate_metrics.json
+      - run: python scripts/build_release_manifest.py --model-dir models/baseline --metrics evaluation/candidate_metrics.json --output evaluation/release_manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: validated-model
+          path: |
+            models/baseline/
+            evaluation/candidate_metrics.json
+            evaluation/release_manifest.json
+            release/
   publish:
     needs: verify
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.12", cache: pip}
-      - run: pip install -e . && python scripts/generate_synthetic_data.py --rows 3000 --seed 42 && python training/train_baseline.py && python scripts/build_release_manifest.py --model-dir models/baseline --metrics artifacts/baseline_metrics.json
+      - uses: actions/download-artifact@v4
+        with: {name: validated-model, path: .}
+      - name: Confirm validated weights exist
+        run: test -s models/baseline/route.joblib && test -s models/baseline/urgency.joblib
       - uses: docker/login-action@v3
-        with: {registry: ghcr.io, username: ${{ github.actor }}, password: ${{ secrets.GITHUB_TOKEN }}}
+        with: {registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}"}
       - uses: docker/build-push-action@v6
         with:
           context: .
