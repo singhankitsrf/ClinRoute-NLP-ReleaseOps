@@ -48,3 +48,5 @@ jobs:
             exit 0
           fi
           python scripts/publish_space.py --repo-id singhankit491/clinroute-nlp
+
+# publication trigger after HF_TOKEN configuration
