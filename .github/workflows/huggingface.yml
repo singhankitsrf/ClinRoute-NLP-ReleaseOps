@@ -1,4 +1,4 @@
-name: Hugging Face Space
+name: Hugging Face Static Space
 
 on:
   pull_request:
@@ -6,8 +6,12 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "hf_space/**"
-      - "scripts/publish_space.py"
+      - "hf_static/**"
+      - "scripts/export_static_space.py"
+      - "scripts/validate_static_space.mjs"
+      - "scripts/publish_static_space.py"
+      - "scripts/generate_synthetic_data.py"
+      - "scripts/model_regression_gate.py"
       - "training/**"
       - "src/**"
       - "evaluation/**"
@@ -24,29 +28,41 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install huggingface_hub==1.30.0
-      - name: Stage only tracked deployment files
-        run: python scripts/publish_space.py --repo-id singhankit491/clinroute-nlp --stage-only /tmp/space
-      - name: Build the exact Space image
-        run: docker build -t portfolio-space /tmp/space
-      - name: Check application startup
+      - name: Install validated ML and Hub dependencies
         run: |
-          docker run -d --name portfolio-space -p 7860:7860 portfolio-space
-          for attempt in $(seq 1 60); do
-            if curl --fail http://localhost:7860/; then exit 0; fi
-            sleep 3
+          python -m pip install --upgrade pip
+          pip install -e . huggingface_hub==1.30.0
+      - name: Reproduce synthetic benchmark
+        run: |
+          python scripts/generate_synthetic_data.py --rows 3000 --seed 42
+          python training/train_baseline.py --metrics evaluation/candidate_metrics.json
+          python scripts/model_regression_gate.py --baseline evaluation/baseline_metrics.json --candidate evaluation/candidate_metrics.json
+      - name: Export trained browser model
+        run: python scripts/export_static_space.py --output /tmp/space
+      - name: Validate browser and scikit-learn parity
+        run: node scripts/validate_static_space.mjs /tmp/space
+      - name: Smoke-test static application
+        run: |
+          python -m http.server 8000 --directory /tmp/space >/tmp/clinroute-static.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid || true' EXIT
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://localhost:8000/index.html >/dev/null && \
+               curl --fail --silent http://localhost:8000/model.json >/dev/null && \
+               curl --fail --silent http://localhost:8000/evaluation.json >/dev/null; then
+              exit 0
+            fi
+            sleep 1
           done
-          docker logs portfolio-space
+          cat /tmp/clinroute-static.log
           exit 1
-      - name: Publish to Hugging Face
+      - name: Publish free Static Space to Hugging Face
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           if [ -z "$HF_TOKEN" ]; then
-            echo "HF_TOKEN is not configured; validated Space is ready but publication is skipped."
+            echo "HF_TOKEN is not configured; validated static bundle is ready but publication is skipped."
             exit 0
           fi
-          python scripts/publish_space.py --repo-id singhankit491/clinroute-nlp
-
-# publication trigger after HF_TOKEN configuration
+          python scripts/publish_static_space.py --repo-id singhankit491/clinroute-nlp --folder /tmp/space
