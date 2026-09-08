@@ -51,11 +51,13 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install package
-        run: pip install -e .
+        run: pip install -e . -c hf_space/requirements.txt
       - name: Generate synthetic baseline corpus
         run: python scripts/generate_synthetic_data.py --rows 3000 --seed 42
       - name: Train reproducible baseline
         run: python training/train_baseline.py --data data/synthetic_referrals.csv --output models/baseline --metrics artifacts/baseline_metrics.json
+      - name: Enforce versioned model regression gate
+        run: python scripts/model_regression_gate.py --baseline evaluation/baseline_metrics.json --candidate artifacts/baseline_metrics.json
       - uses: actions/upload-artifact@v4
         with:
           name: synthetic-baseline-metrics

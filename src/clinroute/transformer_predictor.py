@@ -55,7 +55,9 @@ class TransformerBundle:
         model.eval()
 
         version_file = model_dir / "VERSION"
-        version = version_file.read_text().strip() if version_file.exists() else "dual-head-transformer"
+        version = (
+            version_file.read_text().strip() if version_file.exists() else "dual-head-transformer"
+        )
         return cls(
             model,
             tokenizer,
