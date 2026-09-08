@@ -7,7 +7,7 @@ sdk: static
 app_file: index.html
 pinned: true
 license: mit
-short_description: End-to-end NLP MLOps demo with redaction, routing, calibration, CI/CD, reproducible evaluation, and browser deployment.
+short_description: End-to-end NLP MLOps with CI/CD and browser deployment
 tags:
 - nlp
 - mlops
