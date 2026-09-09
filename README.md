@@ -102,3 +102,9 @@ The repository intentionally uses synthetic data. Redaction is not a certified d
 ## Hugging Face deployment and evaluation
 
 The live public deployment is the free Static Space at https://huggingface.co/spaces/singhankit491/clinroute-nlp. The `hf_static/` bundle is generated from trained scikit-learn parameters and validated against Python inference before publication. The `hf_space/` directory retains the Gradio/Docker server-runtime implementation. See [deployment instructions](docs/HUGGING_FACE.md) and the `evaluation/` directory for measured evidence and limitations.
+
+## Project management
+
+- **Project charter:** [`PROJECT.md`](PROJECT.md)
+- **Live execution roadmap:** [Project Roadmap #4](https://github.com/singhankitsrf/ClinRoute-NLP-ReleaseOps/issues/4)
+- **Portfolio index:** [Five flagship GitHub projects](https://github.com/singhankitsrf/AgentForge-Enterprise-Agentic-RAG/blob/main/PORTFOLIO_PROJECTS.md)
