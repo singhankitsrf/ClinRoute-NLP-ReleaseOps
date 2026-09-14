@@ -45,7 +45,7 @@ jobs:
         run: test -s models/baseline/route.joblib && test -s models/baseline/urgency.joblib
       - uses: docker/login-action@v3
         with: {registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}"}
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           context: .
           push: true
