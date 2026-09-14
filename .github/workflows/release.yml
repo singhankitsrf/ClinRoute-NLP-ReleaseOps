@@ -23,7 +23,7 @@ jobs:
       - name: Mandatory model regression gate
         run: python scripts/model_regression_gate.py --baseline evaluation/baseline_metrics.json --candidate evaluation/candidate_metrics.json
       - run: python scripts/build_release_manifest.py --model-dir models/baseline --metrics evaluation/candidate_metrics.json --output evaluation/release_manifest.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: validated-model
           path: |
