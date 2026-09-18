@@ -18,6 +18,12 @@ This statement records the author's implementation history. It does not by itsel
 | Safety boundary | The repository states that synthetic performance does not establish clinical generalization. | Repository-verifiable |
 | Ownership | The repository was personally implemented by Ankit Kumar Singh. | Author-confirmed |
 
+## Operational relevance
+
+The project reflects healthcare-support NLP requirements informed by hospital-facing workflows and the author's medical AI work associated with AIIMS Raipur. It demonstrates how model behavior, redaction, confidence routing, regression gates, container delivery and security scanning can be governed as one release system.
+
+The committed benchmark is synthetic and must not be interpreted as prospective clinical performance. Real institutional execution context is author-confirmed; protected notes and patient data are intentionally excluded.
+
 ## Reviewer path
 
 1. Read the main README and architecture documentation.
