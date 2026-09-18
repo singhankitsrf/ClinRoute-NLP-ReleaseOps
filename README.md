@@ -95,6 +95,13 @@ The seeded benchmark redacts obvious identifiers and removes identical normalize
 
 The repository intentionally uses synthetic data. Redaction is not a certified de-identification system, and no model here should be used as a clinical decision-maker without approved data governance, external validation, clinical oversight, and relevant regulatory/organizational review.
 
+
+## Evidence and real-world implementation
+
+Personally implemented by Ankit Kumar Singh for healthcare-support NLP and release-engineering use cases informed by hospital and institutional workflows, including his medical-support work associated with AIIMS Raipur.
+
+Evidence is deliberately separated into repository-verifiable artifacts and author-confirmed institutional execution. See [EVIDENCE.md](EVIDENCE.md) for the verification matrix, reviewer path and claim boundaries.
+
 ## Author
 
 **Ankit Kumar Singh** — Applied AI • NLP • Transformers • MLOps • CI/CD • Healthcare AI • Cloud/Platform Engineering
