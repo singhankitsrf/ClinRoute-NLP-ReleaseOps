@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: {python-version: "3.12"}
       - run: python scripts/model_regression_gate.py --baseline "${{ inputs.baseline_artifact }}" --candidate "${{ inputs.candidate_artifact }}"
